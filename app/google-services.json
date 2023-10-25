@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "924083677310",
+    "project_id": "funearn-fc6c0",
+    "storage_bucket": "funearn-fc6c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924083677310:android:1ad956fce5943d836d102f",
+        "android_client_info": {
+          "package_name": "com.cultofgames.funearn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARCkbjCVeKF9VgX0WE19wr3VVdfO6PeQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
