@@ -20,6 +20,7 @@ import static com.cultofgames.funearn.helper.PrefManager.user_points;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,6 +49,8 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.cultofgames.funearn.Adapter.Slider;
+import com.cultofgames.funearn.Adapter.SliderFAdapter;
 import com.cultofgames.funearn.FragmentLoadingActivity;
 import com.cultofgames.funearn.R;
 import com.cultofgames.funearn.csm.AppsActivity;
@@ -88,7 +91,15 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,7 +128,12 @@ public class Main_Fragment extends Fragment {
 
     private List<offers_model> offers = new ArrayList<>();
     private List<SliderItems> sliderItems = new ArrayList<>();
+    SliderView sliderView;
+    SliderFAdapter adapter;
+    DatabaseReference databaseReference,imageRef;
+    ArrayList<Slider> list;
 
+    String imageBanner,imageLink;
     private Boolean is_offer_loaded = false, isWebsiteLoaded = false, isVideoVisitLoaded = false;
     private String offerwalls;
 
@@ -143,7 +159,10 @@ public class Main_Fragment extends Fragment {
         name.setText(AppController.getInstance().getFullname());
         TextView rank = root_view.findViewById(R.id.rank);
         rank.setText(AppController.getInstance().getRank());
-
+        sliderView = root_view.findViewById(R.id.imageSliderMain);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        imageRef = FirebaseDatabase.getInstance().getReference();
+        list = new ArrayList<>();
         viewPager2 = root_view.findViewById(R.id.viewPagerImageSlider);
         game_shim = root_view.findViewById(R.id.game_shimmer);
         LinearLayout scratch_btn = root_view.findViewById(R.id.scratch_btn);
@@ -178,6 +197,8 @@ public class Main_Fragment extends Fragment {
                 }
             });
         }
+
+        fetchBanners();
         spin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -365,7 +386,46 @@ public class Main_Fragment extends Fragment {
         getVideoSettingsFromAdminPannel();
         return root_view;
     }
+    private void setSlider() {
 
+        sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
+        sliderView.setIndicatorSelectedColor(Color.WHITE);
+        sliderView.setIndicatorUnselectedColor(Color.GRAY);
+        sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
+        sliderView.startAutoCycle();
+
+    }
+
+    private void fetchBanners() {
+
+        databaseReference.child("Banners").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    list.clear();
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        String imageUrl = snapshot1.child("imageUrl").getValue(String.class);
+                        String imageLink = snapshot1.child("imageLink").getValue(String.class);
+                        String pushId = snapshot1.child("pushId").getValue(String.class);
+
+//                        Toast.makeText(StartScreen.this, ""+data, Toast.LENGTH_SHORT).show();
+                        list.add(new Slider(imageLink, imageUrl, pushId));
+                    }
+                    adapter = new SliderFAdapter(list, getActivity());
+                    sliderView.setSliderAdapter(adapter);
+                    setSlider();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
     private void getAppsSettingsFromAdminPannel() {
         try {
             String tag_json_obj = "json_login_req";

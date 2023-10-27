@@ -185,12 +185,47 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingBottom="20dp">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
+                <com.smarteist.autoimageslider.SliderView
+                    android:id="@+id/imageSliderMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    app:dotsCornerRadius="8dp"
+                    app:dotsSize="2dp"
+                    app:dotsSpacing="1dp"
+                    app:dotsWidthFactor="1.5"
+                    app:progressMode="true"
+
+                    app:sliderAnimationDuration="600"
+                    app:sliderAutoCycleDirection="back_and_forth"
+                    app:sliderAutoCycleEnabled="true"
+                    app:sliderIndicatorAnimationDuration="600"
+                    app:sliderIndicatorGravity="end|bottom"
+                    app:sliderIndicatorOrientation="horizontal"
+                    app:sliderIndicatorPadding="3dp"
+                    app:sliderIndicatorRadius="1.5dp"
+                    app:sliderIndicatorSelectedColor="#5A5A5A"
+                    app:sliderIndicatorUnselectedColor="#FFF"
+                    app:sliderScrollTimeInSec="1"
+                    app:sliderStartAutoCycle="true" />
+
+            </androidx.cardview.widget.CardView>
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPagerImageSlider"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:paddingStart="40dp"
+                android:layout_marginTop="@dimen/dimen_16dp"
                 android:paddingEnd="40dp" />
 
             <TextView
